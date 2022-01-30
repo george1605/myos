@@ -41,7 +41,7 @@ void cpuclr(){
            : "=a" (a), "=b" (b), "=c" (c), "=d" (d)        \
            : "0" (level), "2" (count))
 
-#define is_x64()
+#define is_x64() 
 #define is_x86()
 
 void cpuctl(int id, int req, int *params)

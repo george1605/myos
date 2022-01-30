@@ -1,5 +1,7 @@
 #pragma once
 #include "lib.c"
+#define is_arm() sizeof(long) == 4 && sizeof(int) == 4
+
 void xrqinstall(size_t ndx, void* addr)
 {
     size_t *v;
