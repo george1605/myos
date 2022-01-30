@@ -637,3 +637,8 @@ uint64_t mminq(void *addr)
                : "memory");
   return ret;
 }
+
+void ltr(uint16_t sel)
+{
+  asm volatile("ltr %0" : : "r" (sel));
+}
