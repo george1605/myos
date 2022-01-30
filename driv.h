@@ -1,6 +1,8 @@
 #pragma once
 #include "lib.c"
 #include "mem.h"
+#include "drivers/blockdev.h"
+
 int* drivbrk = DRIV_MEM + 10;
 
 void dbgprint(char* u){
@@ -9,6 +11,28 @@ void dbgprint(char* u){
 
 void dbgerr(char* u){
   perror(u);
+}
+
+struct drivlog {
+  char** messages;
+  int msgcnt;
+  int size;
+} _log;
+
+void dbgclr(){ // clears the log
+  memset(_log.messages,0,_log.msgcnt);
+}
+
+void dbglog(char* msg){
+  _log.messages[++_log.msgcnt] = msg;
+}
+
+void dbgputc(struct devdrv* x){
+  x->putc(x);
+}
+
+void dbgetc(struct devdrv* x){
+  x->getc(x);
 }
 
 struct drivobj {
@@ -20,7 +44,7 @@ struct drivobj {
   void(*unload)();
 };
 
-typedef void(*drentry)(struct drivobj& u); //just setup the drivobj
+typedef void(*drentry)(struct drivobj* u); //just setup the drivobj
 
 void* dralloc(drentry k){
   int* u = drivbrk;
@@ -31,11 +55,11 @@ void* dralloc(drentry k){
 }
 
 void drexec(drentry k){
-  struct drivobj u;
-  u.flags = 0;
-  u.version = 1;
+  struct drivobj* u = TALLOC(struct drivobj);
+  u->flags = 0;
+  u->version = 1;
   k(u);
-  u.init();
+  u->init();
 }
 
 void drrun(void* u){
@@ -54,7 +78,7 @@ void drfree(void* u){
 }
 
 void drstartio(drentry k){
-  struct drivobj u;
+  struct drivobj* u = TALLOC(struct drivobj);
   k(u);
-  u.startio();
+  u->startio();
 }
