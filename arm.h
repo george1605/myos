@@ -8,8 +8,16 @@ int* armbrk = 0x2A0000;
 void* armalloc(int bytes)
 {
     void* u = armbrk;
-    u += (bytes + 1);
+    *u = 0xdeadbeef;
+    armbrk += (bytes + 1);
+    return u;
+}
 
+void armfree(void* ptr)
+{
+    if(ptr == NULL_PTR) return;
+
+    *(int*)ptr = 0;
 }
 
 void xrqinstall(size_t ndx, void* addr)
