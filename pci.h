@@ -256,6 +256,14 @@ struct pcidev pci_get_device(int vendor, int device, int bus)
 			return pci_devs[a];
 }
 
+struct pcidev get_videodev()
+{
+	int a;
+	for (a = 0; a < 31; a++)
+		if (pci_devs[a].bus == 0 && pci_devs[a].function == 0 && pci_devs[a].class == 0x3)
+			return pci_devs[a];
+}
+
 struct pcidev get_audiodev()
 {
 	int a;

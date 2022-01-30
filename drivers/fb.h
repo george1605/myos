@@ -1,5 +1,9 @@
-//HDMI support
+// fb things from linux
 #include "ioctl.h"
+#include "../pci.h"
+#include "../irq.h"
+#define IRQ_VIDEO 11
+
 #define HDMI_INPUT_8BIT  0
 #define HDMI_INPUT_10BIT 1
 #define	HDMI_INPUT_12BIT 2
@@ -44,7 +48,7 @@ struct fb_image_user {
 	size_t bg_color;
 	uint8_t  depth;			
 	const char* data;	
-	struct fb_cmap_user cmap;	/* color map info */
+	struct fb_cmap_user cmap;
 };
 
 struct fb_cursor_user {
@@ -86,3 +90,8 @@ enum hdmi_infotype
 	HDMI_TYPE_SPD = 0x83,
 	HDMI_TYPE_AUDIO = 0x84,
 };
+
+void video_setirq(void(*hnd)(struct regs*))
+{
+	irq_install_handler(11,hnd);
+}
