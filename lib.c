@@ -167,6 +167,7 @@ struct taskstate
   size_t ebx;
   size_t *esp;
   size_t *ebp;
+  size_t rsp0;
 };
 
 void setesp(struct taskstate *u, size_t *ptr)
@@ -641,4 +642,10 @@ uint64_t mminq(void *addr)
 void ltr(uint16_t sel)
 {
   asm volatile("ltr %0" : : "r" (sel));
+}
+
+void tssinit(struct taskstate* t)
+{
+  asm volatile("mov %%rsp, %0" : "=r"(t->rsp0));
+  asm volatile("ltr %%ax" ::"a"(0x2B));
 }
