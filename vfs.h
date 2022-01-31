@@ -4,6 +4,7 @@
 #include "kb.c"
 #include "lib.c"
 #include "floppy.h"
+#include "process.h"
 #include "drivers/blockdev.h"
 #define PORTBASE 0x1C0000
 #define STR_OUT 0
@@ -261,4 +262,21 @@ void rfs_write(struct vfile u, const char *a, int size)
 {
   if (a != (char *)0 && size != 0)
     memcpy(u.fd, a, size);
+}
+
+struct aiocb  // asynchronous I/O
+{
+  int    fd;     
+  size_t      off;   
+  struct buf *buf;        
+  size_t      nbytes; 
+};
+
+void aioread(struct aiocb* u)
+{
+  for(int a = 0;a < u.nbytes;a++)
+  {
+    prswap(tproc);
+    _read(u->fd,u->buf,1);
+  }
 }
